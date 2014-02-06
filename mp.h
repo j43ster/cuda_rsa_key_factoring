@@ -7,12 +7,12 @@
 #define LEAST_SIG_BIT 1
 
 #define NUM_BITS 1024
-#define NUM_WORDS (NUM_BITS/sizeof(unsigned int))
+#define NUM_WORDS (NUM_BITS/(8*sizeof(unsigned int)))
 
 #define TRUE 1
 #define FALSE 0
 
-// most significant word first
+// least significant word first
 typedef struct mp_int {
    unsigned int idx[NUM_WORDS];
 } mp_int;

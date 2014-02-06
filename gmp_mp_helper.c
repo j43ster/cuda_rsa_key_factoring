@@ -52,7 +52,8 @@ void mp_import_mpz(mp_int* dest, mpz_t source) {
 
    size_t count;
 
-   mpz_export(dest->idx, &count, -1, sizeof(int), 0, 0, source);
+   mpz_export(&dest->idx[0], &count, -1, sizeof(unsigned int), 0, 0, source);
+   printf("words written: %d\n", count);
 
    // print both as hex
    //print_mpz_hex("source: ", source);
@@ -64,7 +65,7 @@ void mp_import_mpz(mp_int* dest, mpz_t source) {
 
 void mp_export_mpz(mpz_t dest, mp_int* source) {
 
-   mpz_import(dest, NUM_WORDS, -1, sizeof(int), 0, 0, source->idx);
+   mpz_import(dest, NUM_WORDS, -1, sizeof(unsigned int), 0, 0, &source->idx[0]);
    
    //print_mp_hex("mp source: ", source);
    //print_mpz_hex(" mpz dest: ", dest); 

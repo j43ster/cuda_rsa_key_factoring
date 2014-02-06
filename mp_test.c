@@ -13,13 +13,13 @@ int gt_test() {
    assert(mp_int_gt(&a, &b) == 0);
    assert(mp_int_gt(&b, &a) == 0);
 
-   a.idx[NUM_WORDS-1] = 10;
-   b.idx[NUM_WORDS-1] = 15;
+   a.idx[0] = 10;
+   b.idx[0] = 15;
 
    assert(mp_int_gt(&a, &b) == 0);
    assert(mp_int_gt(&b, &a) == 1);
 
-   a.idx[0] = 1;
+   a.idx[NUM_WORDS - 1] = 1;
 
    assert(mp_int_gt(&a, &b) == 1);
    assert(mp_int_gt(&b, &a) == 0);
@@ -35,13 +35,13 @@ int gte_test() {
    assert(mp_int_gte(&a, &b) == 1);
    assert(mp_int_gte(&b, &a) == 1);
 
-   a.idx[NUM_WORDS-1] = 10;
-   b.idx[NUM_WORDS-1] = 15;
+   a.idx[0] = 10;
+   b.idx[0] = 15;
 
    assert(mp_int_gte(&a, &b) == 0);
    assert(mp_int_gte(&b, &a) == 1);
 
-   a.idx[0] = 1;
+   a.idx[NUM_WORDS-1] = 1;
 
    assert(mp_int_gte(&a, &b) == 1);
    assert(mp_int_gte(&b, &a) == 0);
@@ -57,13 +57,13 @@ int lt_test() { // way greater
    assert(mp_int_lt(&a, &b) == 0);
    assert(mp_int_lt(&b, &a) == 0);
 
-   a.idx[NUM_WORDS-1] = 10;
-   b.idx[NUM_WORDS-1] = 15;
+   a.idx[0] = 10;
+   b.idx[0] = 15;
 
    assert(mp_int_lt(&a, &b) == 1);
    assert(mp_int_lt(&b, &a) == 0);
 
-   a.idx[0] = 1;
+   a.idx[NUM_WORDS-1] = 1;
 
    assert(mp_int_lt(&a, &b) == 0);
    assert(mp_int_lt(&b, &a) == 1);
@@ -79,13 +79,13 @@ int lte_test() { // way greater
    assert(mp_int_lte(&a, &b) == 1);
    assert(mp_int_lte(&b, &a) == 1);
 
-   a.idx[NUM_WORDS-1] = 10;
-   b.idx[NUM_WORDS-1] = 15;
+   a.idx[0] = 10;
+   b.idx[0] = 15;
 
    assert(mp_int_lte(&a, &b) == 1);
    assert(mp_int_lte(&b, &a) == 0);
 
-   a.idx[0] = 1;
+   a.idx[NUM_WORDS-1] = 1;
 
    assert(mp_int_lte(&a, &b) == 0);
    assert(mp_int_lte(&b, &a) == 1);
@@ -99,18 +99,18 @@ void shift_left_test() {
 
    mp_int_shift_left(&a);
    
-   assert(a.idx[NUM_WORDS-1] == 0);
+   assert(a.idx[0] == 0);
 
-   a.idx[NUM_WORDS-1] = 2;
+   a.idx[0] = 2;
    mp_int_shift_left(&a);
 
-   assert(a.idx[NUM_WORDS-1] == 4);
+   assert(a.idx[0] == 4);
     
-   a.idx[NUM_WORDS-1] += MOST_SIG_BIT;
+   a.idx[0] += MOST_SIG_BIT;
    mp_int_shift_left(&a);
 
-   assert(a.idx[NUM_WORDS-1] == 8);
-   assert(a.idx[NUM_WORDS-2] == 1);
+   assert(a.idx[0] == 8);
+   assert(a.idx[1] == 1);
 }
 
 void shift_right_test() {
@@ -121,19 +121,19 @@ void shift_right_test() {
 
    mp_int_shift_right(&a);
    
-   assert(a.idx[NUM_WORDS-1] == 0);
+   assert(a.idx[0] == 0);
 
-   a.idx[NUM_WORDS-1] = 2;
+   a.idx[0] = 2;
    mp_int_shift_right(&a);
 
-   assert(a.idx[NUM_WORDS-1] == 1);
+   assert(a.idx[0] == 1);
     
-   a.idx[NUM_WORDS-2] += 1;
-   a.idx[NUM_WORDS-2] += 8;
+   a.idx[1] = 1;
+   a.idx[1] += 8;
    mp_int_shift_right(&a);
 
-   assert(a.idx[NUM_WORDS-1] == MOST_SIG_BIT);
-   assert(a.idx[NUM_WORDS-2] == 4);
+   assert(a.idx[0] == MOST_SIG_BIT);
+   assert(a.idx[1] == 4);
 }
 
 void sub_test() {
@@ -145,33 +145,33 @@ void sub_test() {
    mp_init(&res);
 
 
-   a.idx[NUM_WORDS-1] = 61;
-   a.idx[NUM_WORDS-2] = 8;
-   b.idx[NUM_WORDS-1] = 10;
+   a.idx[0] = 61;
+   a.idx[1] = 8;
+   b.idx[0] = 10;
 
    mp_int_sub(&res, &a, &b);
 
-   assert(res.idx[NUM_WORDS-1] == 51);
-   assert(res.idx[NUM_WORDS-2] == 8);
+   assert(res.idx[0] == 51);
+   assert(res.idx[1] == 8);
 
-   a.idx[NUM_WORDS-1] = 61;
-   a.idx[NUM_WORDS-2] = 8;
-   b.idx[NUM_WORDS-1] = UINT_MAX;
+   a.idx[0] = 61;
+   a.idx[1] = 8;
+   b.idx[0] = UINT_MAX;
   
    mp_int_sub(&res, &a, &b);
  
-   assert(res.idx[NUM_WORDS-1] == 62);
-   assert(res.idx[NUM_WORDS-2] == 7);
+   assert(res.idx[0] == 62);
+   assert(res.idx[1] == 7);
 
-   a.idx[NUM_WORDS-1] = 61;
-   a.idx[NUM_WORDS-2] = 0;
-   a.idx[NUM_WORDS-3] = 8;
+   a.idx[0] = 61;
+   a.idx[1] = 0;
+   a.idx[2] = 8;
 
    mp_int_sub(&a, &a, &b);
  
-   assert(a.idx[NUM_WORDS-1] == 62);
-   assert(a.idx[NUM_WORDS-2] == UINT_MAX);
-   assert(a.idx[NUM_WORDS-3] == 7);
+   assert(a.idx[0] == 62);
+   assert(a.idx[1] == UINT_MAX);
+   assert(a.idx[2] == 7);
 }
 
 void is_even_test() {
@@ -180,19 +180,19 @@ void is_even_test() {
 
    mp_init(&a);
 
-   a.idx[NUM_WORDS-1] = 1;
+   a.idx[0] = 1;
 
    assert(mp_int_is_even(&a) == 0);
 
-   a.idx[NUM_WORDS-1] = 2;
+   a.idx[0] = 2;
 
    assert(mp_int_is_even(&a) == 1);
 
-   a.idx[NUM_WORDS-2] = 1;
+   a.idx[1] = 1;
 
    assert(mp_int_is_even(&a) == 1);
 
-   a.idx[NUM_WORDS-2] = 2;
+   a.idx[1] = 2;
 
    assert(mp_int_is_even(&a) == 1);
 }
@@ -203,15 +203,15 @@ void is_odd_test() {
 
    mp_init(&a);
 
-   a.idx[NUM_WORDS-1] = 1;
+   a.idx[0] = 1;
 
    assert(mp_int_is_odd(&a) == 1);
 
-   a.idx[NUM_WORDS-1] = 2;
+   a.idx[0] = 2;
 
    assert(mp_int_is_odd(&a) == 0);
 
-   a.idx[NUM_WORDS-2] = 1;
+   a.idx[1] = 1;
 
    assert(mp_int_is_odd(&a) == 0);
 }
@@ -223,17 +223,17 @@ void copy_test() {
    mp_init(&a);
    mp_init(&b);
 
-   a.idx[NUM_WORDS-1] = 100;
+   a.idx[0] = 100;
    mp_int_copy(&b, &a);
 
-   assert(b.idx[NUM_WORDS-1] == 100);
+   assert(b.idx[0] == 100);
 
-   b.idx[0] = 12;
-   b.idx[NUM_WORDS-1] = 8;
+   b.idx[NUM_WORDS-1] = 12;
+   b.idx[0] = 8;
    mp_int_copy(&a, &b);
 
-   assert(a.idx[0] == 12);
-   assert(a.idx[NUM_WORDS-1] == 8);
+   assert(a.idx[NUM_WORDS-1] == 12);
+   assert(a.idx[0] == 8);
 }
 
 void gcd_test() {
@@ -244,12 +244,12 @@ void gcd_test() {
    mp_init(&b);
    mp_init(&c);
 
-   a.idx[NUM_WORDS-1] = 42;
-   b.idx[NUM_WORDS-1] = 56;
+   a.idx[0] = 42;
+   b.idx[0] = 56;
 
    mp_int_gcd(&c, &a, &b);
 
-   assert(c.idx[NUM_WORDS-1] == 14);
+   assert(c.idx[0] == 14);
 }
 
 int main(void) {

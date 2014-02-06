@@ -50,8 +50,8 @@ void mp_int_gcd(mp_int* res, mp_int* lhs, mp_int* rhs) {
 
    while (!done) {
 
-      printf("on iteration: %d\n", iteration++);
-      printf("last words are: %u, %u\n", a.idx[NUM_WORDS-1], b.idx[NUM_WORDS-1]);
+      //printf("on iteration: %d\n", iteration++);
+      //printf("last words are: %u, %u\n", a.idx[0], b.idx[0]);
 
 
       if (mp_int_is_zero(&a) || mp_int_is_zero(&b))
@@ -98,40 +98,33 @@ void mp_int_sub(mp_int* res, mp_int* a, mp_int* b) {
    int i, j, borrow, current; 
    mp_int lhs, rhs;
 
+   borrow = 0;
+
    mp_int_copy(&lhs, a);
    mp_int_copy(&rhs, b);
 
-   for (i = NUM_WORDS - 1; i > 0; i--) {
+   //printf("NUM_WORDS is: %d\n", NUM_WORDS);
+
+   for (i = NUM_WORDS - 1; i >= 0; i--) {
+
+      //printf("idx: %d, lhs: %u, rhs %u\n", i, a->idx[i], b->idx[i]);
 
       if (lhs.idx[i] >= rhs.idx[i]) {
-         res->idx[i] = lhs.idx[i] - rhs.idx[i]; 
-      } 
-      else { // have to borrow
-     
-         borrow = UINT_MAX; 
-         borrow -= rhs.idx[i]; 
-         res->idx[i] = borrow + lhs.idx[i] + 1; 
-
-         borrow = FALSE; 
-         j = i-1; 
-
-         while (lhs.idx[j] == 0){
-            j--; 
+         res->idx[i] = lhs.idx[i] - rhs.idx[i];
+      }
+      else { // need to borrow
+         j = i + 1;
+         //printf("start borrow idx: %d\n", j);
+         while (res->idx[j] == 0) {
+            res->idx[j] = UINT_MAX;
+            j++;
          }
+         //printf("borrowing from index %d\n", j);
+         res->idx[j] -= 1;
 
-         current = 1; 
-
-         while (!(lhs.idx[j] & current)) {
-            current *= 2; 
-         }
-
-         lhs.idx[j] -= current; 
-         lhs.idx[j] += current - 1; 
-
-         for (j++; j < i; j++) {
-            lhs.idx[j] = UINT_MAX; 
-         }
-      }  
+         res->idx[i] = UINT_MAX - rhs.idx[i];
+         res->idx[i] += lhs.idx[i] + 1;
+      }
    }
 }
 
@@ -139,11 +132,11 @@ void mp_int_shift_left(mp_int* res) {
 
    int i;
 
-   for (i = 0; i < NUM_WORDS; i++) {
+   for (i = NUM_WORDS - 1; i >= 0; i--) {
 
       res->idx[i] = res->idx[i] << 1;
       
-      if (i < NUM_WORDS - 1 && res->idx[i+1] & MOST_SIG_BIT) {
+      if (i > 0 && res->idx[i-1] & MOST_SIG_BIT) {
          res->idx[i] += LEAST_SIG_BIT;
       }
    }
@@ -153,11 +146,11 @@ void mp_int_shift_right(mp_int* res) {
 
    int i;
 
-   for (i = NUM_WORDS; i > 0; i--) {
+   for (i = 0; i < NUM_WORDS; i++) {
 
       res->idx[i] = res->idx[i] >> 1;
       
-      if (i < NUM_WORDS && res->idx[i-1] & LEAST_SIG_BIT) {
+      if (i < NUM_WORDS - 1 && res->idx[i+1] & LEAST_SIG_BIT) {
          res->idx[i] += MOST_SIG_BIT;
       }
    }
@@ -167,7 +160,7 @@ int mp_int_gt(mp_int* lhs, mp_int* rhs) {
 
    int i;
 
-   for (i = 0; i < NUM_WORDS; i++) {
+   for (i = NUM_WORDS - 1; i >= 0; i--) {
       if (lhs->idx[i] > rhs->idx[i]) {
          return TRUE;
       }
@@ -196,12 +189,12 @@ int mp_int_lte(mp_int* lhs, mp_int* rhs) {
 
 int mp_int_is_odd(mp_int* num) {
 
-   return (num->idx[NUM_WORDS-1] & 1);
+   return (num->idx[0] & 1);
 }
 
 int mp_int_is_even(mp_int* num) {
 
-   return (!mp_int_is_odd(num)); // ^ is bitwise xor
+   return (!mp_int_is_odd(num));
 }
 
 int mp_int_is_zero(mp_int* num) {
