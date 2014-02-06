@@ -167,11 +167,11 @@ void sub_test() {
    a.idx[NUM_WORDS-2] = 0;
    a.idx[NUM_WORDS-3] = 8;
 
-   mp_int_sub(&res, &a, &b);
+   mp_int_sub(&a, &a, &b);
  
-   assert(res.idx[NUM_WORDS-1] == 62);
-   assert(res.idx[NUM_WORDS-2] == UINT_MAX);
-   assert(res.idx[NUM_WORDS-3] == 7);
+   assert(a.idx[NUM_WORDS-1] == 62);
+   assert(a.idx[NUM_WORDS-2] == UINT_MAX);
+   assert(a.idx[NUM_WORDS-3] == 7);
 }
 
 void is_even_test() {

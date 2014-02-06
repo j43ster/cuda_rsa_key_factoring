@@ -20,6 +20,7 @@ typedef struct mp_int {
 void mp_init(mp_int* res);
 void mp_int_copy(mp_int* dest, mp_int* source);
 
+void mp_int_print_hex(mp_int* num);
 void mp_int_gcd(mp_int* res, mp_int* a, mp_int* b);
 
 void mp_int_sub(mp_int* res, mp_int* lhs, mp_int* rhs);

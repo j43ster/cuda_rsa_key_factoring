@@ -19,6 +19,19 @@ void mp_int_copy(mp_int* dest, mp_int* source) {
    }
 }
 
+void mp_int_print_hex(mp_int* num) {
+
+   int i;
+   int print_zero = 0;
+
+   for (i = NUM_WORDS-1; i >= 0; i--) {
+      if (num->idx[i] || print_zero) {
+         printf("%.8x", num->idx[i]);
+         print_zero = 1;
+      }
+   }
+}
+
 void mp_int_gcd(mp_int* res, mp_int* lhs, mp_int* rhs) {
 
    int i;
@@ -33,7 +46,13 @@ void mp_int_gcd(mp_int* res, mp_int* lhs, mp_int* rhs) {
    mp_init(res);
    res->idx[NUM_WORDS-1] = 1;
 
+   int iteration = 0;
+
    while (!done) {
+
+      printf("on iteration: %d\n", iteration++);
+      printf("last words are: %u, %u\n", a.idx[NUM_WORDS-1], b.idx[NUM_WORDS-1]);
+
 
       if (mp_int_is_zero(&a) || mp_int_is_zero(&b))
          break;

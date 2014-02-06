@@ -2,18 +2,20 @@
 #define PAIRWISE_GCD_H
 
 #include <stdio.h>
-#include <gmp.h>
 #include <time.h>
-#include <string>
-#include <utility>
-#include <vector>
 
-using namespace std;
+#include "mp.h"
 
-int parse_largeint_file(string filename, mpz_t* intlist, int max_size, bool verbose);
+#define MAX_COMPROMISED_KEYS 200000
 
-// returns a vector of pairs of indexes into intlist of RSA public keys
-// that share a factor
-vector<pair<int, int> > pairwise_gcd(mpz_t* intlist, int length, bool verbose);
+typedef struct compromised_keys {
+
+   int idx_a[MAX_COMPROMISED_KEYS];
+   int idx_b[MAX_COMPROMISED_KEYS];
+
+} compromised_keys;
+
+// returns number of compromised keys
+int pairwise_gcd(mp_int* intlist, int size, compromised_keys* comp_key_idxs, int verbose);
 
 #endif
