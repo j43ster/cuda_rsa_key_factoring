@@ -6,10 +6,8 @@
 #include "pairwise_gcd.h"
 #include "gmp_mp_helper.h"
 
-#define MAX_SIZE 2
-#define FILENAME "keys.txt"
-
-using namespace std;
+#define MAX_SIZE 1024
+#define FILENAME "256keys.txt"
 
 int main() {
 
@@ -21,11 +19,11 @@ int main() {
 
    strcpy(filename, FILENAME);
 
-   size = parse_largeint_file(filename, intlist, MAX_SIZE, true);
+   size = parse_largeint_file(filename, intlist, MAX_SIZE, 0);
 
    printf("read %d ints from file %s\n", size, filename);
 
-   compromizable_pairs = pairwise_gcd(intlist, size, &comp_key_idxs, true); 
+   compromizable_pairs = pairwise_gcd(intlist, size, &comp_key_idxs, 1); 
 
    return 0;
 }

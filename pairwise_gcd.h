@@ -3,8 +3,10 @@
 
 #include <stdio.h>
 #include <time.h>
+#include <gmp.h>
 
 #include "mp.h"
+#include "gmp_helper.h"
 
 #define MAX_COMPROMISED_KEYS 200000
 

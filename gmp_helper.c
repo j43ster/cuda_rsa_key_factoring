@@ -1,14 +1,14 @@
 #include "gmp_helper.h"
 
 gmp_randstate_t randstate;
-bool rand_initialized = false;
+int rand_initialized = 0;
 
 void init_rand() {
 
    gmp_randinit_mt(randstate);
    gmp_randseed_ui(randstate, time(0));
 
-   rand_initialized = true;
+   rand_initialized = 1;
 }
 
 void random_prime(mpz_t prime, unsigned long num_bits) {
@@ -21,9 +21,9 @@ void random_prime(mpz_t prime, unsigned long num_bits) {
    mpz_nextprime(prime, prime);
 }
 
-void print_mp(string prefix, mpz_t num) {
+void print_mp(char* prefix, mpz_t num) {
 
-   printf("%s", prefix.c_str());
+   printf("%s", prefix);
    mpz_out_str(stdout, 10, num);
    printf("\n");
 
