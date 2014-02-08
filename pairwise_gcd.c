@@ -17,10 +17,8 @@ int pairwise_gcd(mp_int* intlist, int size, compromised_keys* comp_key_idxs, int
    for (i = 0; i < size; i++) {
       for (j = i+1; j < size; j++) {
 
-         //printf("comparing keys <n%d, n%d>\n", i+1, j+1);
-
          mp_int_gcd(&cf, &intlist[i], &intlist[j]);
-         if (mp_int_gt(&cf, &one)) { // if cf is greater than 1
+         if (mp_int_gt(&cf, &one)) { 
 
             comp_key_idxs->idx_a[compd_key_count] = i;
             comp_key_idxs->idx_b[compd_key_count] = j;
@@ -31,9 +29,6 @@ int pairwise_gcd(mp_int* intlist, int size, compromised_keys* comp_key_idxs, int
                print_mp("", tmp);
                mp_export_mpz(tmp, &intlist[j]);
                print_mp("", tmp);
-               //printf("numbers n%d and n%d share a gcd of ", i, j);
-               //mpz_out_str(stdout, 10, cf);
-               //printf("\n");
             }
          }
       }

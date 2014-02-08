@@ -1,5 +1,5 @@
 
-default: gcd_cpu gcd_gpu
+default: gcd_cpu gcd_gpu gcd_gmp_cpu
 
 tests: mp_test mp_gmp_test
 
@@ -13,11 +13,17 @@ mp_test:
 mp_gmp_test:
 	gcc -o mp_gmp_test gmp_helper.c gmp_mp_test.c mp.c gmp_mp_helper.c -lgmp
 
+gcd_gmp_cpu:
+	$(MAKE) -C ./part1/ part3
+
 gcd_cpu:
-	gcc -o gcd_cpu -g cpu_gcd.c mp.c pairwise_gcd.c gmp_mp_helper.c gmp_helper.c -lgmp
+	gcc -o gcd_cpu -O2 cpu_gcd.c mp.c pairwise_gcd.c gmp_mp_helper.c gmp_helper.c -lgmp
 
 gcd_gpu:
-	g++ -o part5 part5.cpp gmp_helper.c TextbookRSA.cpp pairwise_gcd.cpp -lgmp
+	true
 
-clean:
-	rm mp_test gcd_cpu gcd_gpu mp_gmp_test
+clean: clean_p1
+	rm -f mp_test gcd_cpu gcd_gpu mp_gmp_test
+
+clean_p1:
+	$(MAKE) -C ./part1/ clean
