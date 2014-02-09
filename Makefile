@@ -21,7 +21,7 @@ gcd_cpu:
 	gcc -m64 -o gcd_cpu -O2 cpu_gcd.c mp.c pairwise_gcd.c gmp_mp_helper.c gmp_helper.c -I /home/clupo/gmp/include /home/clupo/gmp/lib/libgmp.a 
 
 gcd_gpu:
-	true
+	nvcc -O2 -o gcd_gpu gpu_gcd.cu -gencode arch=compute_20,code=sm_20 -gencode arch=compute_30,code=sm_30 -gencode arch=compute_35,code=sm_35 -I /home/clupo/gmp/include -lgmp -L/home/clupo/gmp/lib $^  	
 
 clean: clean_p1
 	rm -f mp_test gcd_cpu gcd_cpu_gmp gcd_gpu mp_gmp_test

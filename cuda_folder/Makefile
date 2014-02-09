@@ -5,6 +5,7 @@ NVFLAGS= -O2 -G -g -gencode arch=compute_20,code=sm_20 -gencode arch=compute_30,
 
 SRCFILES=mp.cu  
 
+
 all:	mp_cuda	
 
 mp_cuda: $(SRCFILES) 
@@ -12,5 +13,5 @@ mp_cuda: $(SRCFILES)
 double: $(SRCFILES)
 	nvcc $(NVFLAGS) $(LIBRARIES) -o mp_cuda -DDOUBLE  $^
 clean: 
-	rm -f *.o mm_cuda
+	rm -f *.o mp_cuda
 

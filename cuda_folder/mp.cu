@@ -1,4 +1,4 @@
-#include "mp.h"
+#include "mp_cuda.h"
 #include <stdio.h>
 
 
@@ -15,8 +15,6 @@ static void HandleError( cudaError_t err, const char *file, int line){
 
 #define HANDLE_ERROR( err ) (HandleError( err, __FILE__, __LINE__ ))
 
-#include "mp.h"
-#include <stdio.h>
 
 __device__ void mp_init(mp_int* res) {
 

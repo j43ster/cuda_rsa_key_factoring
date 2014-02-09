@@ -17,7 +17,7 @@ int main(int argc, char** argv) {
 
    mp_int *intlist = malloc(sizeof(mp_int)*MAX_SIZE);
    compromised_keys comp_key_idxs;
-   int size, compromizable_pairs;
+    int size, compromizable_pairs;
    char filename[FILE_MAX];
 
    verify_arguments(argc, argv, filename);

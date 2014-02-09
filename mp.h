@@ -13,6 +13,7 @@
 #define FALSE 0
 
 // least significant word first
+
 typedef struct mp_int {
    unsigned int idx[NUM_WORDS];
 } mp_int;
