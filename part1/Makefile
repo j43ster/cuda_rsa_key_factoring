@@ -7,7 +7,7 @@ part2:
 	gcc -o part2 part2.c -I/home/clupo/gmp/include -L/home/clupo/gmp/lib -lgmp 
 
 part3:
-	g++ -o part3 part3.cpp pairwise_gcd.cpp -I/home/clupo/gmp/include -L/home/clupo/gmp/lib -lgmp 
+	g++ -m64 -o part3 part3.cpp pairwise_gcd.cpp -I/home/clupo/gmp/include /home/clupo/gmp/lib/libgmp.a 
 
 part4:
 	g++ -o part4 part4.cpp gmp_helper.cpp TextbookRSA.cpp -I/home/clupo/gmp/include -L/home/clupo/gmp/lib -lgmp 
