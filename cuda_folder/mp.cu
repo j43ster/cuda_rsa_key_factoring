@@ -2,6 +2,10 @@
 #include <stdio.h>
 
 
+#define BLOCK_WIDTH 32
+#define GRID_WIDTH 10
+
+
 static void HandleError( cudaError_t err, const char *file, int line){
     if (err != cudaSuccess) {
        printf( "%s in %s at line %d\n", cudaGetErrorString( err ), file, line); 
@@ -11,7 +15,8 @@ static void HandleError( cudaError_t err, const char *file, int line){
 
 #define HANDLE_ERROR( err ) (HandleError( err, __FILE__, __LINE__ ))
 
-
+#include "mp.h"
+#include <stdio.h>
 
 __device__ void mp_init(mp_int* res) {
 
@@ -184,32 +189,32 @@ __device__ int mp_int_gt(mp_int* lhs, mp_int* rhs) {
    return FALSE;
 }
 
-int mp_int_gte(mp_int* lhs, mp_int* rhs) {
+__device__ int mp_int_gte(mp_int* lhs, mp_int* rhs) {
 
    return (!mp_int_gt(rhs, lhs));
 }
 
-int mp_int_lt(mp_int* lhs, mp_int* rhs) {
+__device__ int mp_int_lt(mp_int* lhs, mp_int* rhs) {
 
    return mp_int_gt(rhs, lhs);
 }
 
-int mp_int_lte(mp_int* lhs, mp_int* rhs) {
+__device__ int mp_int_lte(mp_int* lhs, mp_int* rhs) {
 
    return (!mp_int_gt(lhs, rhs));
 }
 
-int mp_int_is_odd(mp_int* num) {
+__device__ int mp_int_is_odd(mp_int* num) {
 
    return (num->idx[0] & 1);
 }
 
-int mp_int_is_even(mp_int* num) {
+__device__ int mp_int_is_even(mp_int* num) {
 
    return (!mp_int_is_odd(num));
 }
 
-int mp_int_is_zero(mp_int* num) {
+__device__ int mp_int_is_zero(mp_int* num) {
 
    int i;
 
@@ -222,7 +227,7 @@ int mp_int_is_zero(mp_int* num) {
    return TRUE;
 }
 
-int mp_int_equal(mp_int* a, mp_int* b) {
+__device__ int mp_int_equal(mp_int* a, mp_int* b) {
 
    int i;
 
@@ -234,16 +239,20 @@ int mp_int_equal(mp_int* a, mp_int* b) {
    return TRUE;
 }
 
-__global__ void mp_kernel(mp_int* res, mp_int* a, int idx_x, int idx_y) {
+__global__ void mp_kernel(mp_int* res, mp_int* keys, int num_keys, int res_width, int idx_x, int idx_y) {
    
-   int row = blockIdx.y * blockDim.y + threadIdx.y;
-   int col = blockIdx.x * blockDim.x + threadIdx.x;
+   int row = blockIdx.y * blockDim.y + threadIdx.y + idx_x;
+   int col = blockIdx.x * blockDim.x + threadIdx.x + idx_y;
+   int res_row = blockIdx.y * blockDim.y + threadIdx.y; 
+   int res_col = blockIdx.x * blockDim.x + threadIdx.x; 
    
-   if(threadIdx.x > threadIdx.y){
-   //gdc calculation using idx_x and idx_y
 
+   if(row > col && row < num_keys){ 
+      mp_int_gcd(&res[res_row*res_width + res_col], &keys[row], &keys[col]);
+      //check that it equals 1   
    
    }
+   __syncthreads();
    
 
 
@@ -254,59 +263,47 @@ void cuda_call(int num_keys, mp_int *keys, mp_int *res){
 
 
    int idx_x, idx_y, i,j;
-   int num_blocks;
+   int num_calls;
    
    
 
-   mp_int keys_d; 
-   mp_int res_d;
-   //BLOCK_WIDTH is going to also change depending on how many keys
-   num_blocks = num_keys/BLOCK_WIDTH;
-   if(num_keys % BLOCK_WIDTH)
-      num_blocks++;
+   mp_int *keys_d; 
+   mp_int *res_d;
+   num_calls = num_keys/(BLOCK_WIDTH*GRID_WIDTH);
+   if(num_keys % (BLOCK_WIDTH * GRID_WIDTH)){
+      num_calls++;
+   }
 
    dim3 dimBlock(BLOCK_WIDTH,BLOCK_WIDTH);
-   //dim3 dimGrid(numBlocks,numBlocks);
-   HANDLE_ERROR(cudaMalloc((void **) &keys_d.idx, sizeof(mp_int)*num_keys));
-   HANDLE_ERROR(cudaMemcpy(keys_d.idx, keys->idx, sizeof(mp_int)*num_keys, cudaMemcpyHostToDevice));
-   HANDLE_ERROR(cudaMalloc((void **) &res_d.idx, sizeof(mp_int)*BLOCK_WIDTH*BLOCK_WIDTH));
+   dim3 dimGrid(GRID_WIDTH,GRID_WIDTH);
+   HANDLE_ERROR(cudaMalloc((void **) &keys_d, sizeof(mp_int)*num_keys));
+   HANDLE_ERROR(cudaMemcpy(keys_d, keys, sizeof(mp_int)*num_keys, cudaMemcpyHostToDevice));
+   HANDLE_ERROR(cudaMalloc((void **) &res_d, sizeof(mp_int)*(GRID_WIDTH*GRID_WIDTH*BLOCK_WIDTH*BLOCK_WIDTH)));
 
-
-
-   idx_x=0; 
-   idx_y=0;
-   for(i=0; i<num_blocks; i+=BLOCK_WIDTH) {
+  printf("in cuda call num calls %d\n", num_calls);  
+   for(i=0; i<num_calls; i+=(BLOCK_WIDTH*GRID_WIDTH)) {
       
-      for(j=0; j<num_blocks; j+=BLOCK_WIDTH) {
+      for(j=0; j<num_calls; j+= (BLOCK_WIDTH *GRID_WIDTH)) {
        
-         if(i>=j) {
+         if(i >= j) {
       
-            multKernel<<<1,dimBlock>>>(res_d, keys_d, i, j);
-            HANDLE_ERROR(cudaMemcpy(res->idx, res_d.idx, sizeof(mp_int)*num_keys, cudaMemcpyDeviceToHost));
-            //need another for loop to take out the values that are not 1
+            mp_kernel<<<dimGrid,dimBlock>>>(res_d, keys_d, num_keys, BLOCK_WIDTH * GRID_WIDTH, i, j);
+            
+            HANDLE_ERROR(cudaMemcpy(res, res_d, sizeof(mp_int)*num_keys, cudaMemcpyDeviceToHost));
+            printf("returned\n"); 
          }
       }
    }
 
-         
-
-
-      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-   return 0;
 }
+int main(void){
+  
+
+
+   printf("hello world\n"); 
+   cuda_call(10, NULL, NULL);  
+   return 0; 
+
+}
+
 
