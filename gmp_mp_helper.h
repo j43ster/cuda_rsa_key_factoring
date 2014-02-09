@@ -1,5 +1,5 @@
-#ifndef GMP_MP_HELPER_H
-#define GMP_MP_HELPER_H
+//#ifndef GMP_MP_HELPER_H
+//#define GMP_MP_HELPER_H
 
 #include <stdio.h>
 #include <gmp.h>
@@ -14,4 +14,4 @@ void print_mp_hex(char* description, mp_int* num);
 void mp_import_mpz(mp_int* dest, mpz_t source);
 void mp_export_mpz(mpz_t dest, mp_int* source);
 
-#endif
+//#endif
