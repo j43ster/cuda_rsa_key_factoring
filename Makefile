@@ -28,8 +28,7 @@ gcd_cpu:
 	#gcc $(CFLAGS) -o gcd_cpu $(CPU_SRC) -I /home/clupo/gmp/include /home/clupo/gmp/lib/libgmp.a 
 
 gcd_gpu: 
-	gcc -c $(GPU_C_SRC) -I/home/clupo/gmp/include/ 
-	/usr/local/cuda-5.5/bin/nvcc -m64 -g -rdc=true -o gcd_gpu -I/home/clupo/gmp/include/ -L/home/clupo/gmp/lib/ -lgmp *.o $(GPU_SRC) -gencode arch=compute_20,code=sm_20 -gencode arch=compute_30,code=sm_30 -gencode arch=compute_35,code=sm_35 $^  
+	/usr/local/cuda-5.5/bin/nvcc -O2 -rdc=true -o gcd_gpu -I/home/clupo/gmp/include/ -L/home/clupo/gmp/lib/ -lgmp $(GPU_SRC) -gencode arch=compute_20,code=sm_20 -gencode arch=compute_30,code=sm_30 -gencode arch=compute_35,code=sm_35 $^  
 
 clean: clean_p1
 	rm -f *.o mp_test gcd_cpu gcd_cpu_gmp gcd_gpu mp_gmp_test
