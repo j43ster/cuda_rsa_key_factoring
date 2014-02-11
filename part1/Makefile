@@ -16,7 +16,7 @@ part5:
 	g++ -o part5 part5.cpp gmp_helper.cpp TextbookRSA.cpp pairwise_gcd.cpp -I/home/clupo/gmp/include -L/home/clupo/gmp/lib -lgmp 
 
 format_converter:
-	g++ -o format_converter format_converter.cpp gmp_helper.cpp TextbookRSA.cpp pairwise_gcd.cpp -I/home/clupo/gmp/include -L/home/clupo/gmp/lib -lgmp 
+	g++ -o format_converter format_converter.cpp gmp_helper.cpp TextbookRSA.cpp pairwise_gcd.cpp -I/home/clupo/gmp/include /home/clupo/gmp/lib/libgmp.a
 
 clean:
 	rm -f part1 part2 part3 part4 part5 format_converter

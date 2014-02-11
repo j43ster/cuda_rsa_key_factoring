@@ -22,7 +22,7 @@ format_converter:
 	$(MAKE) -C ./part1/ format_converter
 	cp ./part1/format_converter .
 
-gcd_gmp_cpu:
+gcd_cpu_gmp:
 	$(MAKE) -C ./part1/ part3
 	cp ./part1/part3 ./gcd_cpu_gmp
 

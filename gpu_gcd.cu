@@ -402,7 +402,6 @@ int main(int argc, char** argv) {
 
    size = parse_largeint_file(filename, intlist, MAX_SIZE, 0);
    
-   printf("read %d keys from file %s\n", size, filename);
    comp_key_idxs = (result_keys*) calloc(RES_SIZE * sizeof(result_keys), 1); 
   // compromizable_pairs = pairwise_gcd(intlist, size, &comp_key_idxs, 1);
    cuda_call(size, intlist, comp_key_idxs); 

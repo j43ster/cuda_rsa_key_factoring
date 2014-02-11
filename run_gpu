@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# first argument is the keyfile to run pairwise gcd on.
+
+# the second argument is where the result is written,
+# if no file is specified then it is written to "{#keyfilename}.out"
+
+TMP=".out"
+PROGRAM="./gcd_gpu"
+
+if (( $# < 1 ))
+then
+   echo No keyfile specified, rerun with a keyfile as input
+   exit 0
+fi
+
+if (( $# < 2 ))
+then
+   OUTPUT="./"${1##*/}".out"
+else
+   OUTPUT="./"$2
+fi
+
+if !(test -f "$PROGRAM")
+then
+   make $PROGRAM
+fi
+
+if !(test -f "./format_converter")
+then
+   make format_converter
+fi
+
+$PROGRAM $1 > $OUTPUT
+./format_converter $OUTPUT > $TMP
+sort $TMP | uniq -u > $OUTPUT
+rm .out
