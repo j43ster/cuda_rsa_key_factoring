@@ -23,8 +23,8 @@ gcd_gmp_cpu:
 	cp ./part1/part3 ./gcd_cpu_gmp
 
 gcd_cpu:
-	gcc -c $(GPU_C_SRC) -I/home/clupo/gmp/include/ 
-	gcc $(CFLAGS) -o gcd_cpu cpu_gcd.c *.o -I /home/clupo/gmp/include /home/clupo/gmp/lib/libgmp.a 
+	gcc -O2 -c $(GPU_C_SRC) -I/home/clupo/gmp/include/ 
+	gcc $(CFLAGS) -O2 -o gcd_cpu cpu_gcd.c *.o -I /home/clupo/gmp/include /home/clupo/gmp/lib/libgmp.a 
 	#gcc $(CFLAGS) -o gcd_cpu $(CPU_SRC) -I /home/clupo/gmp/include /home/clupo/gmp/lib/libgmp.a 
 
 gcd_gpu: 
