@@ -9,7 +9,7 @@
 #include <limits.h>
 #include <assert.h>
 
-#define MOST_SIG_BIT (1 << (sizeof(int)*8 - 1))
+#define MOST_SIG_BIT ((unsigned int)(1 << (sizeof(unsigned int)*8 - 1)))
 #define LEAST_SIG_BIT 1
 
 #define NUM_BITS 1024
