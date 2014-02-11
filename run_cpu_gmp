@@ -12,6 +12,10 @@ if (( $# < 1 ))
 then
    echo No keyfile specified, rerun with a keyfile as input
    exit 0
+elif !(test -f $1)
+then
+   echo $1 does not exist, please specify a new file
+   exit 0
 fi
 
 if (( $# < 2 ))
@@ -31,7 +35,8 @@ then
    make format_converter
 fi
 
-$PROGRAM $1 > $OUTPUT
-./format_converter $OUTPUT > $TMP
-sort $TMP | uniq -u > $OUTPUT
-rm .out
+$PROGRAM $1 > $TMP
+./format_converter $TMP > $OUTPUT
+#sort $TMP | uniq -u > $OUTPUT
+
+rm $TMP

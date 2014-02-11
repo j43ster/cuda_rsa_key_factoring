@@ -29,11 +29,12 @@ int main(int argc, char** argv) {
 
    size = parse_largeint_file(argv[1], intlist, MAX_SIZE, false);
 
-   mpz_t n1, n2, gcd;
+   mpz_t n1, n2, gcd, p;
 
    mpz_init(n1);
    mpz_init(n2);
    mpz_init(gcd);
+   mpz_init(p);
 
    char text[1024];
    size_t count;
@@ -46,8 +47,11 @@ int main(int argc, char** argv) {
     
       //print_mp("gcd is: ", gcd);
 
-      break_rsa_key(n1, gcd); 
-      break_rsa_key(n2, gcd); 
+      mpz_set(p, gcd);
+      break_rsa_key(n1, p);
+
+      mpz_set(p, gcd); 
+      break_rsa_key(n2, p); 
  
       /*break_encryption(pt1, ct, n1, p); 
       break_encryption(pt2, ct, n2, p);
