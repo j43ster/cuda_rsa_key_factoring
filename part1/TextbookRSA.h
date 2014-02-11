@@ -14,6 +14,10 @@ class TextbookRSA {
       static const unsigned long int E = 65537;
       static const int NUM_BITS = 1024;
 
+      mpz_t m_n; // public key modulus
+      mpz_t m_e; // public key exponent
+      mpz_t m_d; // private key
+
       TextbookRSA();
       TextbookRSA(mpz_t p, mpz_t q);
 
@@ -22,9 +26,6 @@ class TextbookRSA {
 
    private:
 
-      mpz_t m_n; // public key modulus
-      mpz_t m_e; // public key exponent
-      mpz_t m_d; // private key
 
       void generate_keys();
       void generate_keys(mpz_t p, mpz_t q);
